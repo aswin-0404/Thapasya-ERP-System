@@ -1,0 +1,15 @@
+from sqlalchemy import Column,String,Integer,ForeignKey
+from app.db.base import Base
+
+class Student(Base):
+    __tablename__="students"
+
+    id=Column(Integer,primary_key=True,index=True)
+
+    user_id=Column(Integer,ForeignKey("users.id"))
+    parent_id=Column(Integer,ForeignKey("parents.id"))
+    branch_id=Column(Integer,ForeignKey("branches.id"))
+
+    name=Column(String)
+    phone=Column(String)
+    dob=Column(String)
