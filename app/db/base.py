@@ -1,10 +1,7 @@
-from sqlalchemy.orm import declarative_base
-
-Base=declarative_base()
-
-
+from app.db.base_class import Base
 from app.models.branch import Branch
 from app.models.course import Course
+from app.models.enquiries import Enquiry
 from app.models.parent import Parent
 from app.models.role import Role
 from app.models.staff_account import StaffAccount
