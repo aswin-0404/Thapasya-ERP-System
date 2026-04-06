@@ -5,7 +5,7 @@ from typing import List
 class ParentSchema(BaseModel):
     name:str
     phone:str
-    email:str | None=None
+    email:EmailStr | None=None
 
 class StudentDataSchema(BaseModel):
     name: str
@@ -16,10 +16,10 @@ class StudentDataSchema(BaseModel):
 class StudentRegisterSchema(BaseModel):
     username : str
     password: str
-    email : str | None = None
+    email : EmailStr | None = None
     role_id : int
 
     parent:ParentSchema
     student:StudentDataSchema
-    course_id: List[int]
+    course_ids: List[int]
 
