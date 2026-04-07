@@ -10,3 +10,4 @@ from app.models.staff import Staff
 from app.models.student_course import StudentCourse
 from app.models.student import Student
 from app.models.user import User
+from app.models.booking import ProgramBooking
