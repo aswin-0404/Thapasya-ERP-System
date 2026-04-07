@@ -1,17 +1,27 @@
 from fastapi import FastAPI
-
-app=FastAPI()
-
+from fastapi.middleware.cors import CORSMiddleware
 from app.db.session import engine
 from app.db.base import Base
-from app.api.v1.router import api_router
+from app.api.v1.router import api_router # The only router import needed
 
-app.include_router(api_router)
+app = FastAPI(title="Thapasya ERP System")
+
+# CORS Middleware (Crucial for your React Frontend)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:5174"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(api_router, prefix="/api/v1")
+
+@app.get("/")
+def home():
+    return {"message": "Fast API is running"}
 
 @app.on_event("startup")
 def startup():
     Base.metadata.create_all(bind=engine)
     print("Tables created!")
-
-
-
