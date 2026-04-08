@@ -6,11 +6,6 @@ from app.core.security import hash_password
 
 def register_student(db,data):
     try:
-        print("TYPE:", type(data.password))
-        print("VALUE:", data.password)
-        print("LENGTH:", len(str(data.password)))
-
-
         hashed_password=hash_password(data.password)
 
         user = create_user(
