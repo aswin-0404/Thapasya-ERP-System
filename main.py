@@ -2,7 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.db.session import engine
 from app.db.base import Base
-from app.api.v1.router import api_router # The only router import needed
+from app.api.v1.router import api_router
+from fastapi import File, UploadFile, HTTPException
+from app.utils.s3 import upload_file_to_s3
 
 app = FastAPI(title="Thapasya ERP System")
 
