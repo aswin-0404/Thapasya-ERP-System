@@ -2,6 +2,12 @@ from pydantic import BaseModel
 from datetime import datetime
 from typing import Optional, List
 from decimal import Decimal
+from app.schemas.course import Course
+
+
+class CourseMinimal(BaseModel):
+    id: int
+    name: str
 
 class BookingBase(BaseModel):
     course_ids: List[int] 
@@ -22,10 +28,12 @@ class BookingResponse(BaseModel):
     client_name: str
     place: str
     event_date_time: datetime
-
-    courses: List[dict]
+    duration_hours: float
+    people_count: int
+    description: Optional[str]
     status: str
-    created_at: datetime
+
+    courses: List[CourseMinimal] 
 
     class Config:
         from_attributes = True
