@@ -20,7 +20,7 @@ def login_user(db,data):
     })
 
     return {
-        "access_token":token,
+        "token":token,
         "token_type": "bearer",
         "role":role.name
     }

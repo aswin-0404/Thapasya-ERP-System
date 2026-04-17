@@ -1,5 +1,13 @@
 from pydantic_settings import BaseSettings
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+SECRET_KEY=os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+
 class Settings(BaseSettings):
     DATABASE_URL: str
     SECRET_KEY: str
