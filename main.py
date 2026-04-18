@@ -23,7 +23,7 @@ app.include_router(api_router, prefix="/api/v1")
 
 @app.get("/")
 def home():
-    return {"message": "CI/CD is working"}
+    return {"message": "CI/CD working test 2 "}
 
 @app.on_event("startup")
 def startup():
