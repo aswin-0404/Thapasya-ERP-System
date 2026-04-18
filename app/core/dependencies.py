@@ -3,8 +3,7 @@ from jose import JWTError,jwt
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.models.staff import Staff
-from app.models.student import Student
+from app.models.user import User
 from app.core.config import SECRET_KEY,ALGORITHM
 
 
@@ -29,13 +28,16 @@ def get_current_user(request:Request ,db : Session = Depends(get_db)):
         raise HTTPException (status_code=401,detail="Token error")
     
     if role == 2:
-        user= db.query(Staff).filter(Staff.user_id==user_id).first()
+        user= db.query(User).filter(User.id==user_id).first()
 
-    elif role== 1:
-        user= db.query(Student).filter(Student.user_id==user_id).first()
-    
+    elif role== 3:
+        user= db.query(User).filter(User.id==user_id).first()
+
+    elif role==1:
+        user= db.query(User).filter(User.id==user_id).first()
+        
     else:
-        raise HTTPException(status_code=401, detail="Role Not FOund")
+        raise HTTPException(status_code=401, detail="Role Not Found")
 
     if not user:
         raise HTTPException(status_code=401,detail="User Not Found")
@@ -43,4 +45,7 @@ def get_current_user(request:Request ,db : Session = Depends(get_db)):
     return user
 
 
-
+def get_current_admin( current_user=Depends(get_current_user)):
+    if current_user.role_id !=1:
+        raise HTTPException(status_code=403,detail="Admin only")
+    return current_user

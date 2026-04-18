@@ -5,6 +5,8 @@ from app.db.base import Base
 from app.api.v1.router import api_router
 from fastapi import File, UploadFile, HTTPException
 from app.utils.s3 import upload_file_to_s3
+from app.db.session import SessionLocal
+from app.utils.seeds import create_default_admin
 
 app = FastAPI(title="Thapasya ERP System")
 
@@ -26,4 +28,10 @@ def home():
 @app.on_event("startup")
 def startup():
     Base.metadata.create_all(bind=engine)
-    print("Tables created!")
+
+    db=SessionLocal()
+
+    create_default_admin(db)
+
+    db.close()
+

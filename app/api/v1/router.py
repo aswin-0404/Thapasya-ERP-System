@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1.endpoints import student, staff, enquiry, course, booking, auth
+from app.api.v1.endpoints import student, staff, enquiry, course, booking, auth, role, branch
 
 api_router = APIRouter()
 
@@ -8,6 +8,8 @@ api_router = APIRouter()
 api_router.include_router(student.router, prefix="/student", tags=["Students"])
 api_router.include_router(staff.router, prefix="/staff", tags=["Staff"])
 api_router.include_router(auth.router, prefix="/auth", tags=["Auth"])
+api_router.include_router(role.router)
+api_router.include_router(branch.router)
 
 
 # Prince Routes

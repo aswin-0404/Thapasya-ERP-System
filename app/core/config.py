@@ -8,6 +8,12 @@ load_dotenv()
 SECRET_KEY=os.getenv("SECRET_KEY")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 
+DATABASE_URL=os.getenv("DATABASE_URL")
+
+ADMIN_USERNAME=os.getenv("ADMIN_USERNAME")
+ADMIN_PASSWORD=os.getenv("ADMIN_PASSWORD")
+ADMIN_EMAIL=os.getenv("ADMIN_EMAIL")
+
 class Settings(BaseSettings):
     DATABASE_URL: str
     SECRET_KEY: str
