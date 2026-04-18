@@ -17,7 +17,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            cd /home/ec2-user/Thapasya-ERP-System
+            cd /home/ubuntu/Thapasya-ERP-System
             git pull origin main
             source venv/bin/activate
             pip install -r requirements.txt
