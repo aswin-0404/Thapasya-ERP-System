@@ -23,7 +23,7 @@ app.include_router(api_router, prefix="/api/v1")
 
 @app.get("/")
 def home():
-    return {"message": "Fast API is running"}
+    return {"message": "CI/CD is working"}
 
 @app.on_event("startup")
 def startup():
