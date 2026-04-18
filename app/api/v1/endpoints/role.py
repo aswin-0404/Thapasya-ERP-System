@@ -9,7 +9,7 @@ from app.core.dependencies import get_current_admin
 
 router=APIRouter(prefix="/roles", tags=["Roles"])
 
-router.post("/")
+@router.post("/")
 def create_role(data : RoleCreate, db : Session=Depends(get_db),admin=Depends(get_current_admin)):
 
     existing=db.query(Role).filter(Role.name == data.name).first()
