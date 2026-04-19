@@ -1,4 +1,5 @@
 from sqlalchemy import Column,String,Integer,ForeignKey
+from sqlalchemy.orm import relationship
 from app.db.base_class import Base
 
 class Staff(Base):
@@ -11,3 +12,7 @@ class Staff(Base):
     name = Column(String)
     phone = Column(String)
     adhar_url= Column(String)
+
+    user=relationship("User")
+    branch=relationship("Branch")
+

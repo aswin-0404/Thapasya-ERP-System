@@ -1,4 +1,5 @@
 from sqlalchemy import Column,Integer,String,ForeignKey
+from sqlalchemy.orm import relationship
 from app.db.base_class import Base
 
 class StaffAccount(Base):
@@ -9,3 +10,5 @@ class StaffAccount(Base):
 
     account_number= Column(String)
     ifsc = Column(String)
+
+    staff=relationship("Staff")

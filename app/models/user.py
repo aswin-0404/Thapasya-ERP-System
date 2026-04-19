@@ -1,4 +1,5 @@
 from sqlalchemy import Column,Integer,String,ForeignKey,Boolean
+from sqlalchemy.orm import relationship
 from app.db.base_class import Base
 
 class User(Base):
@@ -10,4 +11,6 @@ class User(Base):
     password=Column(String)
     role_id=Column(Integer,ForeignKey("roles.id"))
     is_active=Column(Boolean,default=True)
+
+    role=relationship("Role")
     

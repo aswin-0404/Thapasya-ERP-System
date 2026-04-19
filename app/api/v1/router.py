@@ -6,6 +6,8 @@ from app.api.v1.endpoints.staff import router as staff_router
 from app.api.v1.endpoints.auth import router as auth_router
 from app.api.v1.endpoints.role import router as role_router
 from app.api.v1.endpoints.branch import router as branch_router
+from app.api.v1.endpoints.daily_log import router as daily_log_router
+from app.api.v1.endpoints.staff_course_togle import router as my_courses
 
 api_router = APIRouter()
 
@@ -16,7 +18,8 @@ api_router.include_router(staff_router, prefix="/staff", tags=["Staff"])
 api_router.include_router(auth_router, prefix="/auth", tags=["Auth"])
 api_router.include_router(role_router)   
 api_router.include_router(branch_router)
-
+api_router.include_router(daily_log_router)
+api_router.include_router(my_courses)
 
 # Prince Routes
 
