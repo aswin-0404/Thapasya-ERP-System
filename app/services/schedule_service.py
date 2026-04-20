@@ -6,8 +6,15 @@ from app.models.staff import Staff
 from app.models.course import Course
 from app.models.branch import Branch
 from app.models.staff_course import StaffCourse
+from datetime import date
+from app.core.dependencies import check_admin_role,check_user_role
 
-def create_schedule_service(data, db :Session):
+def create_schedule_service(data, db :Session,current_admin):
+
+    role=check_admin_role(db,current_admin)
+    if role != "admin":
+        raise HTTPException(status_code=403,detail="Admin only can access")
+
 
     branch=db.query(Branch).filter(Branch.id == data.branch_id).first()
     if not branch:
@@ -54,5 +61,35 @@ def create_schedule_service(data, db :Session):
     return schedule
     
 
+def get_upcoming_schedule_service(course_id : int ,db : Session, current_user):
 
+    role=check_user_role(db,current_user)
+    if role != "staff":
+        raise HTTPException(status_code=403,detail="staff only can access")
+    
+    staff=db.query(Staff).filter(Staff.user_id == current_user.id).first()
+    if not staff:
+        raise HTTPException(status_code=404,detail="Staff not found")
+    
+    today = date.today()
+
+    schedule=db.query(Schedule).filter(
+        Schedule.staff_id == staff.id,
+        Schedule.course_id == course_id,
+        Schedule.class_date >= today
+    ).order_by(Schedule.class_date,Schedule.class_time).all()
+
+    if not schedule:
+        return{
+            "message":"No schedules Available"
+        }
+    
+    return [
+        {
+            "class_date":s.class_date,
+            "class_time": s.class_time,
+            "course":s.course.name
+        }
+        for s in schedule
+    ]
     

@@ -4,6 +4,13 @@ from app.models.staff_course import StaffCourse
 from app.repositories.user_repository import create_user
 from app.core.security import hash_password
 
+from app.models.staff import Staff
+from app.models.course import Course
+from app.models.staff_course import StaffCourse
+from app.core.dependencies import check_user_role
+from fastapi import HTTPException
+
+
 def register_staff(db,data):
     try:
         hashed_password=hash_password(data.password)
@@ -48,3 +55,14 @@ def register_staff(db,data):
         db.rollback()
         raise e
     
+def staff_course_toggle(db,current_user):
+    
+    role=check_user_role(db,current_user)
+    if role != "staff":
+        raise HTTPException(status_code=403,detail="staff only can access")
+
+    staff=db.query(Staff).filter(Staff.user_id == current_user.id).first()
+
+    courses = db.query(Course).join(StaffCourse).filter(StaffCourse.staff_id == staff.id).all()
+
+    return courses

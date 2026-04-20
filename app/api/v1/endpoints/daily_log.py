@@ -2,42 +2,17 @@ from fastapi import APIRouter,Depends,HTTPException
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
-from app.models.daily_log import DailyLog
 from app.schemas.daily_log import DailyLogCreate
-from app.core.dependencies import get_current_user
-from app.models.staff import Staff
-from datetime import date
+from app.core.dependencies import get_current_user,get_current_admin
+from app.services.daily_log_service import create_daily_log_service,get_all_logs_service
 
 
 router = APIRouter(prefix="/daily_log",tags=["DailyLog"])
 
 @router.post("/")
 def create_daily_log(data : DailyLogCreate, db: Session = Depends(get_db),current_user = Depends(get_current_user)):
-    
-    staff = db.query(Staff).filter(Staff.user_id == current_user.id).first()
+    return create_daily_log_service(data ,db ,current_user)
 
-    if not staff:
-        raise HTTPException(status_code=403,detail="Not a staff")
-    
-
-    existing = db.query(DailyLog).filter(
-    DailyLog.date == date.today(),
-    DailyLog.course_id == data.course_id,
-    DailyLog.staff_id == staff.id).first()
-
-    if existing:
-        raise HTTPException(400, "Log already exists for this class today")
-    
-    log= DailyLog(
-        staff_id=staff.id,
-        course_id=data.course_id,
-        class_summary=data.class_summary,
-        topics_covered=data.topics_covered,
-        next_class_topic=data.next_class_topic
-    )
-
-    db.add(log)
-    db.commit()
-    db.refresh(log)
-
-    return log
+@router.get('/get_log')
+def get_specific_log(staff_id : int ,db:Session=Depends(get_db), current_admin=Depends(get_current_admin)):
+    return get_all_logs_service(staff_id, db, current_admin)
