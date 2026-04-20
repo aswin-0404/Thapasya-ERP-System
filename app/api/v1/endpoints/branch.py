@@ -10,4 +10,8 @@ router=APIRouter(prefix='/branches',tags=['Branches'])
 
 @router.post("/")
 def create_branch(data : BranchCreate ,db :Session=Depends(get_db),current_admin= Depends(get_current_admin)):
-    return create_branch_service(data, db, current_admin)
+    try:
+        return create_branch_service(data, db, current_admin)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    

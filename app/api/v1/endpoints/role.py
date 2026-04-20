@@ -11,5 +11,8 @@ router=APIRouter(prefix="/roles", tags=["Roles"])
 
 @router.post("/")
 def create_role(data : RoleCreate, db : Session=Depends(get_db),current_admin=Depends(get_current_admin)):
-
-    return role_create_service(data,db,current_admin)
+    try:
+        return role_create_service(data,db,current_admin)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    

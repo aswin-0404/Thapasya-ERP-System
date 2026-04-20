@@ -3,11 +3,13 @@ from sqlalchemy.orm import Session
 from app.schemas.staff import StaffRegisterSchema
 from app.services.staff_service import register_staff
 from app.db.session import get_db
+from app.core.dependencies import get_current_admin
+
 
 router = APIRouter()
 
 @router.post("/register-staff")
-def register(data:StaffRegisterSchema, db:Session =Depends(get_db)):
+def register(data:StaffRegisterSchema, db:Session =Depends(get_db),current_admin=Depends(get_current_admin)):
     try:
         return register_staff(db,data)
     except Exception as e:

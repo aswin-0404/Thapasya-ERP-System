@@ -4,7 +4,7 @@ from app.models.student_course import StudentCourse
 from app.repositories.user_repository import create_user
 from app.core.security import hash_password
 
-def register_student(db,data):
+def register_student(db,data,current_admin):
     try:
         hashed_password=hash_password(data.password)
 

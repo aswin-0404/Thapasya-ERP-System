@@ -15,4 +15,8 @@ def create_daily_log(data : DailyLogCreate, db: Session = Depends(get_db),curren
 
 @router.get('/get_log')
 def get_specific_log(staff_id : int ,db:Session=Depends(get_db), current_admin=Depends(get_current_admin)):
-    return get_all_logs_service(staff_id, db, current_admin)
+    try:
+        return get_all_logs_service(staff_id, db, current_admin)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    

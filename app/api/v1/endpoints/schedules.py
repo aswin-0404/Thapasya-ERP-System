@@ -1,4 +1,4 @@
-from fastapi import APIRouter,Depends
+from fastapi import APIRouter,Depends,HTTPException
 from sqlalchemy.orm  import Session
 
 from app.schemas.schedule import ScheduleCreate
@@ -15,5 +15,9 @@ def create_schedule(data : ScheduleCreate, db : Session=Depends(get_db),current_
 
 @router.get('/get_schedule')
 def get_schedule(course_id : int, db:Session=Depends(get_db), current_user=Depends(get_current_user)):
-    return get_upcoming_schedule_service(course_id, db, current_user)
+    try:
+        return get_upcoming_schedule_service(course_id, db, current_user)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    
 

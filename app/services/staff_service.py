@@ -3,15 +3,20 @@ from app.models.staff_account import StaffAccount
 from app.models.staff_course import StaffCourse
 from app.repositories.user_repository import create_user
 from app.core.security import hash_password
-
-from app.models.staff import Staff
-from app.models.course import Course
-from app.models.staff_course import StaffCourse
-from app.core.dependencies import check_user_role
 from fastapi import HTTPException
 
 
-def register_staff(db,data):
+from app.models.staff import Staff
+from app.models.course import Course
+from app.models.student_course import StudentCourse
+from app.models.student import Student
+from app.models.staff_course import StaffCourse
+from app.core.dependencies import check_user_role
+from app.models.attendence import Attendance
+from datetime import date
+
+
+def register_staff(db,data,current_admin):
     try:
         hashed_password=hash_password(data.password)
 
@@ -66,3 +71,50 @@ def staff_course_toggle(db,current_user):
     courses = db.query(Course).join(StaffCourse).filter(StaffCourse.staff_id == staff.id).all()
 
     return courses
+
+def get_my_students_service(course_id,branch_id,db,current_user):
+
+    role=check_user_role(db,current_user)
+    if role !="staff":
+        raise HTTPException(status_code=403, detail="Only staff can access")
+    
+    students=db.query(StudentCourse).join(Student,Student.id == StudentCourse.student_id).filter(
+        Student.branch_id == branch_id,
+        StudentCourse.course_id == course_id
+    ).all()
+
+    if not students:
+        return {
+            "message":"No Students Found"
+        }
+
+    return [
+        {
+            "id":s.student.id,
+            "name":s.student.name
+        }
+        for s in students
+    ]
+    
+
+def mark_attendance_service(data,db,current_user):
+    try:
+        role= check_user_role(db,current_user)
+        if role !="staff":
+            raise HTTPException(status_code=403, detail="Only staff can access")
+
+        attendance=Attendance(
+            student_id = data.student_id,
+            course_id= data.course_id,
+            date=date.today(),
+            status=data.status
+        )
+        db.add(attendance)
+        db.commit()
+        db.refresh(attendance)
+
+        return attendance
+
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=str(e))
+
