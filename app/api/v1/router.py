@@ -12,7 +12,7 @@ from app.api.v1.endpoints.schedules import router as class_schedule
 
 api_router = APIRouter()
 
-# Aswin Routes
+# Application routes
 
 api_router.include_router(student_router, prefix="/student", tags=["Students"])
 api_router.include_router(staff_router, prefix="/staff", tags=["Staff"])
@@ -23,7 +23,7 @@ api_router.include_router(daily_log_router)
 api_router.include_router(my_courses)
 api_router.include_router(class_schedule)
 
-# Prince Routes
+# Website routes
 
 api_router.include_router(enquiry.router, prefix="/enquiries", tags=["Enquiries"])
 api_router.include_router(course.router, prefix="/courses", tags=["Courses"])
