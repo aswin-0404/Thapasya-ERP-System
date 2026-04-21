@@ -1,12 +1,21 @@
+from datetime import datetime
+from sqlalchemy.orm import Session
+from fastapi import HTTPException
 from app.models.parent import Parent
 from app.models.student import Student
 from app.models.student_course import StudentCourse
+from app.models.course import Course
+from app.models.daily_log import DailyLog
+from app.models.schedule import Schedule
+from app.models.attendence import Attendance
 from app.repositories.user_repository import create_user
 from app.core.security import hash_password
 
-def register_student(db,data,current_admin):
+# REGISTRATION
+
+def register_student(db: Session, data, current_admin):
     try:
-        hashed_password=hash_password(data.password)
+        hashed_password = hash_password(data.password)
 
         user = create_user(
             db,
@@ -18,12 +27,12 @@ def register_student(db,data,current_admin):
         db.flush()
 
         parent = db.query(Parent).filter(
-            Parent.phone== data.parent.phone,
+            Parent.phone == data.parent.phone,
             Parent.name == data.parent.name
         ).first()
 
         if not parent:
-            parent= Parent(
+            parent = Parent(
                 name=data.parent.name,
                 phone=data.parent.phone,
                 email=data.parent.email
@@ -31,7 +40,7 @@ def register_student(db,data,current_admin):
             db.add(parent)
             db.flush()
 
-        student= Student(
+        student = Student(
             user_id=user.id,
             parent_id=parent.id,
             branch_id=data.student.branch_id,
@@ -43,17 +52,97 @@ def register_student(db,data,current_admin):
         db.add(student)
         db.flush()
 
-
         for course_id in data.course_ids:
             db.add(StudentCourse(
-                student_id = student.id,
+                student_id=student.id,
                 course_id=course_id
             ))
         
         db.commit()
 
-        return {"message":"Student registration successfull"}
+        return {"message": "Student registration successful"}
     
     except Exception as e:
         db.rollback()
         raise e
+
+# STUDENT DASHBOARD & COURSE TOGGLE
+
+def get_student_enrolled_courses(db: Session, current_user):
+    """Returns the list of courses for the toggle buttons"""
+    student = db.query(Student).filter(Student.user_id == current_user.id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    courses = db.query(Course).join(StudentCourse).filter(
+        StudentCourse.student_id == student.id
+    ).all()
+    
+    return [{"id": c.id, "name": c.name} for c in courses]
+
+def get_student_home_dashboard(db: Session, current_user, course_id: int):
+    """Returns all data for the home screen after a course is selected"""
+    # Identify the student
+    student = db.query(Student).filter(Student.user_id == current_user.id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student record not found")
+
+    # Enrollment Check: Security layer
+    is_enrolled = db.query(StudentCourse).filter(
+        StudentCourse.student_id == student.id,
+        StudentCourse.course_id == course_id
+    ).first()
+
+    if not is_enrolled:
+        raise HTTPException(
+            status_code=403, 
+            detail="Access Denied: You are not enrolled in this course."
+        )
+    
+    # Greetings
+    hour = datetime.now().hour
+    greeting = "Good Morning" if hour < 12 else "Good Afternoon" if hour < 17 else "Good Evening"
+
+    # Attendance History & Count
+    attendance_records = db.query(Attendance).filter(
+        Attendance.student_id == student.id,
+        Attendance.course_id == course_id
+    ).order_by(Attendance.date.desc()).all()
+
+    present_count = sum(1 for a in attendance_records if a.status == "present")
+
+    # Class Schedules
+    schedules = db.query(Schedule).filter(
+        Schedule.course_id == course_id,
+        Schedule.branch_id == student.branch_id
+    ).all()
+
+    # Class Logs 
+    logs = db.query(DailyLog).filter(
+        DailyLog.course_id == course_id
+    ).order_by(DailyLog.date.desc()).limit(5).all()
+
+    return {
+        "user_info": {
+            "greeting": greeting, 
+            "name": student.name
+        },
+        "attendance": {
+            "total_present": present_count,
+            "history": [
+                {"date": a.date.strftime("%d %b %Y"), "status": a.status} 
+                for a in attendance_records
+            ]
+        },
+        "schedules": [
+            {"day": s.class_date.strftime("%A"), "time": s.class_time.strftime("%I:%M %p")} 
+            for s in schedules
+        ],
+        "recent_logs": [
+            {
+                "title": log.topics_covered,
+                "summary": log.class_summary,
+                "date": log.date.strftime("%d %b")
+            } for log in logs
+        ]
+    }
