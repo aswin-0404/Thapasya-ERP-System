@@ -34,7 +34,8 @@ def register_staff(db,data,current_admin):
             name=data.staff.name,
             phone=data.staff.phone,
             branch_id=data.staff.branch_id,
-            adhar_url=data.staff.aadhar_url
+            adhar_url=data.staff.aadhar_url,
+            address=data.staff.address
         )
         db.add(staff)
         db.flush()

@@ -37,6 +37,8 @@ def register_student(db,data,current_admin):
             branch_id=data.student.branch_id,
             name=data.student.name,
             phone=data.student.phone,
+            dob=data.student.dob,
+            address=data.student.address
         )
         db.add(student)
         db.flush()

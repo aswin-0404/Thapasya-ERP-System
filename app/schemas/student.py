@@ -11,6 +11,7 @@ class StudentDataSchema(BaseModel):
     name: str
     phone: str
     dob: str
+    address : str
     branch_id: int
 
 class StudentRegisterSchema(BaseModel):

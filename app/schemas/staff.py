@@ -6,6 +6,7 @@ class StaffDataSchema(BaseModel):
     phone : str
     branch_id : int
     aadhar_url : str | None=None
+    address : str
 
 class StaffAccountSchema(BaseModel):
     account_number : str
