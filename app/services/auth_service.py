@@ -24,3 +24,4 @@ def login_user(db,data):
         "token_type": "bearer",
         "role":role.name
     }
+

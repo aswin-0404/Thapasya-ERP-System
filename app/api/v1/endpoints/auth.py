@@ -25,3 +25,14 @@ def login(data: LoginSchema ,response:Response, db: Session=Depends(get_db)):
         }
     except Exception as e:
         raise HTTPException (status_code=400,detail=str(e))
+    
+@router.post('/logout')
+def logout(response:Response):
+    try:
+        response.delete_cookie(
+            key="access_token",
+            httponly=True
+        )
+        return {"message":"Logout successful"}
+    except Exception as e:
+        raise HTTPException(status_code=400,detail=str(e))

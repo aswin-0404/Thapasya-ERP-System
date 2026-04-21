@@ -1,4 +1,5 @@
-from sqlalchemy import Column,Integer,String
+from sqlalchemy import Column,Integer,String,ForeignKey
+from sqlalchemy.orm import relationship
 from app.db.base_class import Base
 
 class Parent(Base):
@@ -8,3 +9,9 @@ class Parent(Base):
     name=Column(String)
     phone=Column(String,unique=True)
     email=Column(String,nullable=True)
+
+    user_id=Column(Integer,ForeignKey("users.id"),nullable=True)
+
+    students=relationship("Student",back_populates="parent")
+    user=relationship("User")
+

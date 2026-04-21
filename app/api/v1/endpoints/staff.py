@@ -11,6 +11,6 @@ router = APIRouter()
 @router.post("/register-staff")
 def register(data:StaffRegisterSchema, db:Session =Depends(get_db),current_admin=Depends(get_current_admin)):
     try:
-        return register_staff(db,data)
+        return register_staff(db,data,current_admin)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

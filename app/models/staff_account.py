@@ -7,8 +7,11 @@ class StaffAccount(Base):
 
     id= Column(Integer,primary_key=True,index=True)
     staff_id= Column(Integer,ForeignKey("staff.id"))
+    user_id=Column(Integer,ForeignKey("users.id"),nullable=True)
+    
 
     account_number= Column(String)
     ifsc = Column(String)
 
     staff=relationship("Staff")
+    user=relationship("User")

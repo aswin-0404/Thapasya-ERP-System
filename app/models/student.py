@@ -1,4 +1,4 @@
-from sqlalchemy import Column,String,Integer,ForeignKey
+from sqlalchemy import Column,String,Integer,ForeignKey,Text
 from sqlalchemy.orm import relationship
 from app.db.base_class import Base
 
@@ -14,6 +14,7 @@ class Student(Base):
     name=Column(String)
     phone=Column(String)
     dob=Column(String)
+    address=Column(Text,nullable=True)
 
     user=relationship("User")
     parent=relationship("Parent")
