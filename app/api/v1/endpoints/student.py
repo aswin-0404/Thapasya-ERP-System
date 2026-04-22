@@ -30,3 +30,4 @@ def get_dashboard(course_id: int, db: Session = Depends(get_db), current_user = 
         return get_student_home_dashboard(db, current_user, course_id)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+    

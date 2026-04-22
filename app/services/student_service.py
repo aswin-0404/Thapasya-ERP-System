@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime,date
 from sqlalchemy.orm import Session
 from fastapi import HTTPException
 from app.models.parent import Parent
@@ -55,7 +55,8 @@ def register_student(db: Session, data, current_admin):
         for course_id in data.course_ids:
             db.add(StudentCourse(
                 student_id=student.id,
-                course_id=course_id
+                course_id=course_id,
+                joined_date=date.today()
             ))
         
         db.commit()

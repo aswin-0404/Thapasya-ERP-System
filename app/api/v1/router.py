@@ -10,6 +10,7 @@ from app.api.v1.endpoints.daily_log import router as daily_log_router
 from app.api.v1.endpoints.staff_course_togle import router as my_courses
 from app.api.v1.endpoints.schedules import router as class_schedule
 from app.api.v1.endpoints.profile import router as user_profile
+from app.api.v1.endpoints.fee import router as fee_router
 
 api_router = APIRouter()
 
@@ -24,6 +25,7 @@ api_router.include_router(daily_log_router)
 api_router.include_router(my_courses)
 api_router.include_router(class_schedule)
 api_router.include_router(user_profile)
+api_router.include_router(fee_router)
 
 # Website routes
 

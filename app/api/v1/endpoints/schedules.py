@@ -11,7 +11,7 @@ router=APIRouter(prefix="/class_schedule",tags=["Class Schedule"])
 
 @router.post("/")
 def create_schedule(data : ScheduleCreate, db : Session=Depends(get_db),current_admin=Depends(get_current_admin)):
-    return create_schedule_service(data,db)
+    return create_schedule_service(data,db,current_admin)
 
 @router.get('/get_schedule')
 def get_schedule(course_id : int, db:Session=Depends(get_db), current_user=Depends(get_current_user)):

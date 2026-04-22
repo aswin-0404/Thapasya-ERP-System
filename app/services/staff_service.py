@@ -43,7 +43,8 @@ def register_staff(db,data,current_admin):
         for course_id in data.course_ids:
             db.add(StaffCourse(
                 staff_id = staff.id,
-                course_id = course_id
+                course_id = course_id,
+                assigned_date=date.today()
             ))
 
         account= StaffAccount(

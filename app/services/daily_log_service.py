@@ -10,16 +10,23 @@ from app.core.dependencies import check_admin_role,check_user_role
 
 def create_daily_log_service(data, db : Session ,current_user):
 
-    staff = check_user_role(db,current_user)
+    role = check_user_role(db,current_user)
 
-    if not staff:
+    if role != "staff":
         raise HTTPException(status_code=403,detail="Not a staff")
     
+    staff = db.query(Staff).filter(
+        Staff.user_id == current_user.id
+    ).first()
+
+    if not staff:
+        raise HTTPException(status_code=404, detail="Staff not found")
+
 
     existing = db.query(DailyLog).filter(
-    DailyLog.date == date.today(),
-    DailyLog.course_id == data.course_id,
-    DailyLog.staff_id == staff.id).first()
+        DailyLog.date == date.today(),
+        DailyLog.course_id == data.course_id,
+        DailyLog.staff_id == staff.id).first()
 
     if existing:
         raise HTTPException(400, "Log already exists for this class today")
@@ -29,7 +36,8 @@ def create_daily_log_service(data, db : Session ,current_user):
         course_id=data.course_id,
         class_summary=data.class_summary,
         topics_covered=data.topics_covered,
-        next_class_topic=data.next_class_topic
+        next_class_topic=data.next_class_topic,
+        date = date.today()
     )
 
     db.add(log)
