@@ -110,7 +110,7 @@ def get_student_home_dashboard(db: Session, current_user, course_id: int):
         Attendance.course_id == course_id
     ).order_by(Attendance.date.desc()).all()
 
-    present_count = sum(1 for a in attendance_records if a.status == "present")
+    present_count = sum(1 for a in attendance_records if a.status.value.lower() == "present")
 
     # Class Schedules
     schedules = db.query(Schedule).filter(
@@ -136,7 +136,7 @@ def get_student_home_dashboard(db: Session, current_user, course_id: int):
             ]
         },
         "schedules": [
-            {"day": s.class_date.strftime("%A"), "time": s.class_time.strftime("%I:%M %p")} 
+            {"date": s.class_date.strftime("%d %b"), "day": s.class_date.strftime("%A"), "time": s.class_time.strftime("%I:%M %p")}
             for s in schedules
         ],
         "recent_logs": [
@@ -145,5 +145,27 @@ def get_student_home_dashboard(db: Session, current_user, course_id: int):
                 "summary": log.class_summary,
                 "date": log.date.strftime("%d %b")
             } for log in logs
+        ]
+    }
+
+def get_student_attendance_history(db: Session, current_user, course_id: int):
+    """Returns only the attendance records for the calendar view"""
+    student = db.query(Student).filter(Student.user_id == current_user.id).first()
+    if not student:
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    # Fetch all records for the selected course
+    records = db.query(Attendance).filter(
+        Attendance.student_id == student.id,
+        Attendance.course_id == course_id
+    ).order_by(Attendance.date.desc()).all()
+
+    return {
+        "course_id": course_id,
+        "history": [
+            {
+                "date": a.date.strftime("%Y-%m-%d"), 
+                "status": a.status # present, absent, late, etc.
+            } for a in records
         ]
     }
