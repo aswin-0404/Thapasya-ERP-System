@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.schemas.student import StudentRegisterSchema
-from app.services.student_service import register_student, get_student_enrolled_courses, get_student_home_dashboard
+from app.services.student_service import register_student, get_student_enrolled_courses, get_student_home_dashboard, get_student_attendance_history
 from app.db.session import get_db
 from app.core.dependencies import get_current_admin, get_current_user
 
@@ -30,4 +30,11 @@ def get_dashboard(course_id: int, db: Session = Depends(get_db), current_user = 
         return get_student_home_dashboard(db, current_user, course_id)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
-    
+
+# Get Attendance Record
+@router.get("/attendance-history/{course_id}")
+def read_attendance(course_id: int, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    try:
+        return get_student_attendance_history(db, current_user, course_id)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
