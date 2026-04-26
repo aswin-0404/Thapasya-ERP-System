@@ -13,7 +13,7 @@ app = FastAPI(title="Thapasya ERP System")
 # CORS Middleware (Crucial for your React Frontend)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:5174", "https://thapasya-arts-school-website.vercel.app"],
+    allow_origins=["http://localhost:5173", "http://localhost:5174", "https://thapasya-arts-school.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
