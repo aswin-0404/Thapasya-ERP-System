@@ -5,6 +5,7 @@ from app.db.session import get_db
 from app.models.booking import ProgramBooking
 from app.models.course import Course
 from app.schemas.booking import BookingCreate, BookingResponse
+from app.core.dependencies import get_current_admin
 
 router = APIRouter()
 
@@ -43,7 +44,8 @@ def create_program_booking(
 def get_all_bookings(
     db: Session = Depends(get_db),
     skip: int = 0,
-    limit: int = 100
+    limit: int = 100,
+    current_admin = Depends(get_current_admin)
 ):
     """
     Retrieve all bookings. Each booking will include its list of associated courses.
@@ -54,7 +56,8 @@ def get_all_bookings(
 @router.get("/{booking_id}", response_model=BookingResponse)
 def get_booking_by_id(
     booking_id: int,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin = Depends(get_current_admin)
 ):
     """
     Get details of a specific booking by its ID.
