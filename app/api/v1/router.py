@@ -11,11 +11,13 @@ from app.api.v1.endpoints.staff_course_togle import router as my_courses
 from app.api.v1.endpoints.schedules import router as class_schedule
 from app.api.v1.endpoints.profile import router as user_profile
 from app.api.v1.endpoints.fee import router as fee_router
+from app.api.v1.endpoints.notification import router as notification_router
 
 api_router = APIRouter()
 
 # Application routes
 
+api_router.include_router(notification_router, prefix="/notifications", tags=["notifications"])
 api_router.include_router(student_router, prefix="/student", tags=["Students"])
 api_router.include_router(staff_router, prefix="/staff", tags=["Staff"])
 api_router.include_router(auth_router, prefix="/auth", tags=["Auth"])
