@@ -5,10 +5,10 @@ from app.models.role import Role
 def login_user(db,data):
     user=get_user_by_username(db,data.username)
 
-    role= db.query(Role).filter(Role.id==user.role_id).first()
-
     if not user:
         raise Exception("Invalid Username")
+
+    role= db.query(Role).filter(Role.id==user.role_id).first()
     
     if not verify_password(data.password,user.password):
         raise Exception("Invalid Password")

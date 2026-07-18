@@ -1,26 +1,25 @@
-from pydantic import BaseModel,EmailStr
+from datetime import date
+from pydantic import BaseModel, EmailStr
 from typing import List
 
-
 class ParentSchema(BaseModel):
-    name:str
-    phone:str
-    email:EmailStr | None=None
+    name: str
+    phone: str
+    email: EmailStr | None = None
 
 class StudentDataSchema(BaseModel):
     name: str
     phone: str
-    dob: str
-    address : str
+    dob: date
+    address: str
     branch_id: int
 
 class StudentRegisterSchema(BaseModel):
-    username : str
+    username: str
     password: str
-    email : EmailStr | None = None
-    role_id : int
+    email: EmailStr | None = None
+    role_id: int
 
-    parent:ParentSchema
-    student:StudentDataSchema
+    parent: ParentSchema
+    student: StudentDataSchema
     course_ids: List[int]
-

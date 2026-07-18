@@ -12,3 +12,10 @@ from app.models.student import Student
 from app.models.user import User
 from app.models.booking import ProgramBooking
 from app.models.daily_log import DailyLog
+from app.models.fee import FeeSchedule
+from app.models.payment import Payment
+from app.models.notification import Notification, UserDeviceToken
+from app.models.salary import SalaryPayment
+from app.models.schedule import Schedule
+from app.models.attendence import Attendance
+from app.models.staff_attendance import StaffAttendance
