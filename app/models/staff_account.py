@@ -7,7 +7,7 @@ class StaffAccount(Base):
 
     id= Column(Integer,primary_key=True,index=True)
     staff_id= Column(Integer,ForeignKey("staff.id"))
-    user_id=Column(Integer,ForeignKey("users.id"),nullable=True)
+    user_id=Column(Integer,ForeignKey("users.id", ondelete="CASCADE"),nullable=True)
     
 
     account_number= Column(String)
