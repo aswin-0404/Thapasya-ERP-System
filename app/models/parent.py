@@ -10,7 +10,7 @@ class Parent(Base):
     phone=Column(String,unique=True)
     email=Column(String,nullable=True)
 
-    user_id=Column(Integer,ForeignKey("users.id"),nullable=True)
+    user_id=Column(Integer,ForeignKey("users.id", ondelete="CASCADE"),nullable=True)
 
     students=relationship("Student",back_populates="parent")
     user=relationship("User")
